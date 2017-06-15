@@ -1,0 +1,72 @@
+﻿运行说明：
+	node server.js开启后台node服务器
+	npm run dev开启devServer服务器
+
+注意：
+reactjs组件有些地方应该还可以优化，比如login.js和regist.js有很多相同的地方，不过修改之后就不会这么直观了，所以暂时这样吧；
+express后台的数据库操作部分也可以优化，也先暂时那样吧，大神轻喷。。。
+另外，第一次在webpack和node设置跨域的时候还是费了一些功夫，关键是网上的一些大神些的东西太抽象，小白不懂。。。现在才明白，webpack上先配置proxy，配置跨域路由、跨到哪儿去、允许跨域三个缺一不可；同时ajax上不用jsonp了，还有node后台Access-Control-Allow-Origin和Access-Control-Allow-Methods都要有。。。
+此外，关于node-sass下载的问题，npm直接下载经常会失败，要先用淘宝镜像安装cnpm(npm install cnpm -g --registry=https://registry.npm.taobao.org)，然后再cnpm install node-sass --save-dev
+
+
+剧本：
+需要解决的问题：
+首先是前台功能：
+	1. 登录或者注册成功时，顶部中间换成用户名，右侧换成退出，并导航到首页
+	2. 退出时，顶部中间换成登录，右侧换成注册，并导航到首页
+	3. 未登录状态下，提交按钮不可点击，或点击后提示框提示登录
+	4. 登录状态下留言时，获取到用户名、留言时间、留言内容等，并生成节点，节点中添加删除按钮、点赞点踩
+其次是后台功能：开发后台服务器，并连接到mysql数据库：
+	1. 登录用户名存在性验证，注册用户名的重复性验证
+	2. 通过componentDidMount把数据展示到留言板上; 提交留言时把留言写入数据库，再把该条留言展示到留言板
+	3. 是否管理员身份验证：想法一是由于用户名的唯一性，条件判断admin；想法二是以数据库数据的id值是否为1判断admin; 新开一个组件，作为欢迎页，如果是管理员就欢迎管理员登录，否则就是欢迎登录; 
+	4. 管理员的删除功能：
+	5. 点赞和点踩：获取父节点name属性中的从数据库拿出来的id值来确定点赞和点踩哪条信息
+以上功能基本完成，接下可以考虑的地方：
+	1. 利用scss改造样式；
+	2. 用UI框架改造页面，比如bootstrap或者antd
+	   选择的是antd：出现两个问题：
+	   	   1) 在配置.babelrc的时候，报错其中的libraryName是一个invalid property
+	   	   	  不过，删除.babelrc文件后，将配置写在webpack配置文件中就生效了
+	   	   2) 引入antd成功后，scss样式中的body上自己设置的背景色#eee被不知道哪儿来的#fff覆盖了以及router中IndexRoute的active切换状态失效了
+	
+
+
+
+错误说明：
+	0. 从根路由对应的组件进入页面时，路由如下：
+		<Route path="/" component={Nav}>
+			<IndexRoute component={Home} />
+			<Route path="/login" component={Login} />
+			<Route path="/regist" component={Regist} />
+		</Route>
+	此时，对于根路由的to链接，应该采用IndexLink，才能在切换其他组件时，根路由对应组件的active消失，
+	不然，切换至其他组件时，根路由的active状态总是存在
+	<IndexLink activeClassName="active" className="links" to="/">首页</IndexLink>
+	<Link activeClassName="active" className="links" to="/login">登录</Link>
+	<Link activeClassName="active" className="links" to="/regist">注册</Link>
+	1. 若有提示错误：Access denied for use 'root'@'localhost' (using password: YES)
+	很可能是数据库的登录信息错误，最可能是密码;
+	2. 如果查询汉字或者英文字母总是失败，前台显示504，后台显示错误：Unknown column 'xxx' in 'where clause'。原因是，查询语句 select delete update insert中的涉及的需要查询的变量没有加引号！
+	3. 当时做登录用户名存在性验证的时候，一直在纠结以上2错误之外，还纠结究竟是onchange还是onSubmit来触发ajax验证。之后确定了用onblur
+	4. 在用数据库操作的时候，如果有错误：Error: Cannot enqueue Query after invoking quit。开始的时候，个人从enqueue这个关键词猜测，错误原因是自己写的程序和nodejs单线程的特征向冲突。详细如下：
+		当时连接和关闭数据库的时候，流程是这样的：
+			——创建连接
+				——查询等操作
+					——上一步成功条件下再查询等操作
+			——关闭数据库
+			——执行完成
+	以上模式导致了上一个错误。实际上，中间的第二步查询等操作是在数据库关闭之后进行的，这些数据库操作由于单线程执行时，被推入事件执行队列，等待后续操作完成再继续进行。然而，之后数据库已经关闭了，这个查询数据库的事件没法完成。因此，需要将以上流程修改：
+			——创建链接
+				——查询等操作
+					——上一步成功后再操作
+					——关闭数据库
+				——查询等操作
+					——上一步成功后再操作
+					——关闭数据库
+			——执行完成
+	5. 引入antd之后body上自己设置的#eee被不知道出处的#fff覆盖，解决方法是在自己设置的#eee上添加!important。当然也可以在body节点上添加id="body",然后给#body加样式，不过不好
+	6. 引入antd之后，nav上的a标签切换时，3个标签总是同时具有active状态颜色。我首先猜测是由于a标签本身字体颜色没有初始化或者初始化失败造成的，因此考虑到初始化颜色可能像错误5那样被覆盖，尝试为a标签初始化颜色添加！important，不过，此时3个a标签的字体颜色都变成#666且active状态中带的颜色即使在切换时也没有显示出来。此时应该是.active颜色没有生效导致的，所以同时为.active字体颜色设置!important，就完全解决了。
+
+	最后一个问题：
+		登录或注册成功的时候，跳转到首页。此时首页和退出的active状态同时存在，这个应该是reactjs导航this.context.router.push出现的问题，暂时没有解决

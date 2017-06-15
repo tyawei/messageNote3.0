@@ -1,0 +1,43 @@
+{
+  "name": "mymessageReactNode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "dev": "webpack-dev-server --devtool eval --content-base"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-plugin-import": "^1.2.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "body-parser": "^1.17.2",
+    "css-loader": "^0.28.4",
+    "express": "^4.15.3",
+    "extract-text-webpack-plugin": "^2.1.0",
+    "http-proxy-middleware": "^0.17.4",
+    "jsx-loader": "^0.13.2",
+    "mysql": "^2.13.0",
+    "node-sass": "^4.5.3",
+    "react-hot-loader": "^1.3.1",
+    "sass-loader": "^6.0.5",
+    "style-loader": "^0.18.1",
+    "transform-runtime": "0.0.0",
+    "webpack": "^2.6.1",
+    "webpack-dev-server": "^2.4.5"
+  },
+  "dependencies": {
+    "antd": "^2.11.0",
+    "jquery": "^3.2.1",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-router": "^2.8.1"
+  }
+}

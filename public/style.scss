@@ -1,0 +1,56 @@
+body, p, h1, h2, h3, h4, h5, h6, header, ul, ol, form, input, textarea, select {margin:0; padding:0;}
+body {color:#666; background-color:#eee !important; font-family:"微软雅黑";}
+li {list-style:none;}
+a {
+	color:#666 !important; text-decoration:none;
+	&:hover {text-decoration:none;}
+}
+.clearfix{
+	&:after {content:""; display:block; clear:both;}
+}
+.active {color:#8b8df9 !important; }
+
+#h {
+	width:100%; height:50px; line-height:50px; background:#fff;
+	.nav-bar {margin:0 auto; width:60%;}
+	.links {display:inline-block; width:33.33%; text-align:center; font-size:20px;}
+}
+#main {-webkit-box-sizing:border-box; margin:10px auto 0; width:60%;}
+.content {
+	-webkit-box-sizing:border-box; padding:30px; margin:10px auto 10px; border-radius:5px; 
+	line-height:1.5; 
+	background:#fff;
+	.section {
+		width:80%; margin:0 auto;
+		.submit {float:right; display:block; background:#0071eb; outline:none; border:none; width:60px; height:36px;text-align:center; color:#fff; border-radius:8px; font-size:15px;}
+	}
+	.article {
+		width:80%; margin:0 auto;
+		.mes {padding:15px 0;}
+		.user {margin-right:15px; font-size:16px;}
+		.time {color:#999; font-size:15px;}
+		.del {
+			@extend .time;
+			float: right; 
+			cursor:pointer;
+		}
+		.message {text-indent:2em;}
+		.eva {
+			float:right; margin-right:15px;
+			.good {
+				margin-right:15px;
+				&:hover {cursor:pointer;}
+			}
+			.bad {
+				&:hover {cursor:pointer;}
+			}
+		}
+	}
+	.tips {font-weight:normal; margin-bottom:20px;}
+	textarea[name=text] {-webkit-box-sizing:border-box; padding:10px; width:100%; height:100px; border-color:#e1e1e1; outline:none; border-radius:8px;}
+	.login-form {
+		margin:15px auto;
+		.login-form-button {width:100%;}
+		.error {position:absolute; top: 28px; left:0; color:red;}
+	}
+}
