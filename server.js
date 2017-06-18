@@ -32,7 +32,7 @@ app.post('/check/:item', function(req, res) {
 	var connection=mysql.createConnection({
 		host: 'localhost',
 		user: 'root',
-		password: '20402991GnAt',
+		password: '',
 		database: 'mymessage',
 		port: 3306
 	});
@@ -137,7 +137,7 @@ app.post('/mes/:item', function(req, res) {
 	var connection=mysql.createConnection({
 		host: 'localhost',
 		user: 'root',
-		password: '20402991GnAt',
+		password: '',
 		database: 'mymessage',
 		port: 3306
 	});
